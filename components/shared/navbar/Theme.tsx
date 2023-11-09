@@ -7,8 +7,6 @@ import {
    MenubarContent,
    MenubarItem,
    MenubarMenu,
-   MenubarSeparator,
-   MenubarShortcut,
    MenubarTrigger,
 } from "@/components/ui/menubar";
 import Image from "next/image";
@@ -42,7 +40,7 @@ const Theme = () => {
                {themes.map((item) => (
                   <MenubarItem
                      key={item.value}
-                     className="flex items-center gap-4 px-2.5 py-2 dark:focus:bg-dark-400"
+                     className="focus-background-light700_dark400 flex items-center gap-4 px-2.5 py-2"
                      onClick={() => {
                         setMode(item.value);
 

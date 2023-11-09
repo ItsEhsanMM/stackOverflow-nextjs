@@ -24,10 +24,10 @@ bg-dark-400
 !important;
    }
    .background-light700_dark400 {
-      @apply bg-light-700
-dark
-:
-bg-dark-400;
+      @apply bg-light-700 dark:bg-dark-400;
+   }
+   .focus-background-light700_dark400 {
+      @apply focus:bg-light-700 dark:focus:bg-dark-400;
    }
    .background-light700_dark300 {
       @apply bg-light-700

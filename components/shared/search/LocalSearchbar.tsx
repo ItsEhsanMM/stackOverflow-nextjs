@@ -11,7 +11,7 @@ interface Props {
    otherClasses?: string;
 }
 
-const LocalSearchbar = ({
+const LocalSearchBar = ({
    iconPosition,
    imgSrc,
    placeholder,
@@ -37,7 +37,7 @@ const LocalSearchbar = ({
             onChange={() => {}}
             className="no-focus paragraph-regular placeholder background-light800_darkgradient border-none shadow-none outline-none"
          />
-                  {iconPosition === "right" && (
+         {iconPosition === "right" && (
             <Image
                className="cursor-pointer"
                width={24}
@@ -49,4 +49,4 @@ const LocalSearchbar = ({
       </div>
    );
 };
-export default LocalSearchbar;
+export default LocalSearchBar;
