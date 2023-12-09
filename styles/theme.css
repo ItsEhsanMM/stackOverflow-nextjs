@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 @layer utilities {
+   .text-dark400_light700 {
+      @apply text-dark-400 dark:text-light-700;
+   }
    .background-light850_dark100 {
       @apply bg-light-850
        dark:bg-dark-100;
@@ -64,12 +67,7 @@ dark
 :
 text-light-700;
    }
-   .text-dark400_light700 {
-      @apply text-dark-400
-dark
-:
-text-light-700;
-   }
+
    .text-dark500_light700 {
       @apply text-dark-500 dark:text-light-700
 !important;
@@ -84,10 +82,7 @@ text-light-500;
       @apply text-dark-300 dark:text-light-900 !important;
    }
    .text-dark400_light800 {
-      @apply text-dark-400
-dark
-:
-text-light-800;
+      @apply text-dark-400 dark:text-light-800;
    }
    .text-light400_light500 {
       @apply text-light-400 dark:text-light-500 !important;

@@ -1,9 +1,50 @@
+import QuestionCard from "@/components/cards/QuestionCard";
 import HomeFilters from "@/components/home/HomeFilters";
 import Filter from "@/components/shared/Filter";
+import NoResult from "@/components/shared/NoResult";
 import LocalSearchBar from "@/components/shared/search/LocalSearchbar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
 import Link from "next/link";
+
+const questions = [
+   {
+      _id: "1",
+      title: "How to create a new question?",
+      tags: [
+         { _id: "1", name: "React" },
+         { _id: "2", name: "Javascript" },
+         { _id: "3", name: "Typescript" },
+      ],
+      author: {
+         name: "John Doe",
+         _id: "authorId1",
+         picture: "url-to-author-picture",
+      },
+      upvotes: 500600,
+      views: 1200,
+      answers: [],
+      createdAt: new Date("2022-01-01T00:00:00.000Z"),
+   },
+   {
+      _id: "2",
+      title: "Cascading Style Sheet",
+      tags: [
+         { _id: "1", name: "React" },
+         { _id: "2", name: "Javascript" },
+         { _id: "3", name: "Typescript" },
+      ],
+      author: {
+         name: "John Doe",
+         _id: "authorId2",
+         picture: "url-to-author-picture",
+      },
+      upvotes: 20000,
+      views: 1000000,
+      answers: [],
+      createdAt: new Date("2021-01-01T00:00:00.000Z"),
+   },
+];
 
 export default function Home() {
    return (
@@ -35,6 +76,31 @@ export default function Home() {
          </div>
 
          <HomeFilters />
+
+         <div className="mt-10 flex w-full flex-col gap-6">
+            {questions.length > 0 ? (
+               questions.map((question) => (
+                  <QuestionCard
+                     key={question._id}
+                     _id={question._id}
+                     title={question.title}
+                     tags={question.tags}
+                     author={question.author}
+                     upvotes={question.upvotes}
+                     views={question.views}
+                     answers={question.answers}
+                     createdAt={question.createdAt}
+                  />
+               ))
+            ) : (
+               <NoResult
+                  title="There's no question o show"
+                  description="Be the first to break the silence! 🚀 Ask a Question and kickstart the discussion. our query could be the next big thing others learn from. Get involved! 💡"
+                  link="/ask-question"
+                  linkTitle="Ask a question"
+               />
+            )}
+         </div>
       </>
    );
 }

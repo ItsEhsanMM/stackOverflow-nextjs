@@ -3,19 +3,19 @@ import Link from "next/link";
 import RenderTag from "./RenderTag";
 
 const topQuestions = [
-   { _id: 1, question: "question1" },
-   { _id: 2, question: "question2" },
-   { _id: 3, question: "question3" },
-   { _id: 4, question: "question4" },
-   { _id: 5, question: "question5" },
+   { _id: "1", question: "question1" },
+   { _id: "2", question: "question2" },
+   { _id: "3", question: "question3" },
+   { _id: "4", question: "question4" },
+   { _id: "5", question: "question5" },
 ];
 
 const popularTags = [
-   { _id: 1, name: "js", totalCount: 5 },
-   { _id: 2, name: "react", totalCount: 6 },
-   { _id: 3, name: "vue", totalCount: 2 },
-   { _id: 4, name: "redux", totalCount: 4 },
-   { _id: 5, name: "angular", totalCount: 10 },
+   { _id: "1", name: "js", totalCount: 5 },
+   { _id: "2", name: "react", totalCount: 6 },
+   { _id: "3", name: "vue", totalCount: 2 },
+   { _id: "4", name: "redux", totalCount: 4 },
+   { _id: "5", name: "angular", totalCount: 10 },
 ];
 
 const RightSidebar = () => {

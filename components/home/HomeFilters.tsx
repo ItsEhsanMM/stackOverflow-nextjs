@@ -1,10 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { HomePageFilters } from "@/constants/filters";
 import { Button } from "../ui/button";
 
 const HomeFilters = () => {
-   const active = "";
+   const [active, setActive] = useState("");
 
    return (
       <div className="mt-10 hidden flex-wrap gap-3 md:flex">
@@ -16,7 +17,7 @@ const HomeFilters = () => {
                      ? "bg-primary-100 text-primary-500"
                      : "background-light800_darkgradient text-light400_light500"
                }`}
-               onClick={() => {}}
+               onClick={() => setActive(item.value)}
             >
                {item.name}
             </Button>
