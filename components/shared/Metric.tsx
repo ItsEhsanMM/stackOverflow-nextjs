@@ -1,11 +1,10 @@
-import { formatNumber } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
 interface MetricProps {
    imgUrl: string;
    alt: string;
-   value: number;
+   value: number | string;
    title: string;
    textStyles?: string;
    href?: string;
@@ -31,7 +30,7 @@ const Metric = ({
             className={`object-contain ${href && "rounded-full"}`}
          />
          <p className={`${textStyles} flex items-center gap-1`}>
-            {formatNumber(value)}
+            {value}
             <span
                className={`small-regular line-clamp-1 ${
                   isAuthor && "max-sm:hidden"
