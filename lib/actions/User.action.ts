@@ -67,9 +67,9 @@ export async function deleteUser({ clerkId }: DeleteUserParams) {
          throw new Error(`No user found with the id ${clerkId}`);
       }
 
-      const userQuestionIds = await Question.find({
-         author: user._id,
-      }).distinct("_id");
+      // const userQuestionIds = await Question.find({
+      //    author: user._id,
+      // }).distinct("_id");
 
       await Question.deleteMany({ author: user._id });
 
