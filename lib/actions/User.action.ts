@@ -48,7 +48,7 @@ export async function updateUser({
    try {
       connectToDatabase();
 
-      await User.findByIdAndUpdate({ clerkId }, updateData, { new: true });
+      await User.findOneAndUpdate({ clerkId }, updateData, { new: true });
 
       revalidatePath(path);
    } catch (error) {
@@ -61,7 +61,7 @@ export async function deleteUser({ clerkId }: DeleteUserParams) {
    try {
       connectToDatabase();
 
-      const user = await User.findByIdAndDelete({ clerkId });
+      const user = await User.findOneAndDelete({ clerkId });
 
       if (!user) {
          throw new Error(`No user found with the id ${clerkId}`);
