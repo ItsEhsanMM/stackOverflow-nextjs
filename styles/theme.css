@@ -20,11 +20,7 @@
       @apply bg-light-800 dark:dark-gradient;
    }
    .background-light800_dark400 {
-      @apply bg-light-800
-dark
-:
-bg-dark-400
-!important;
+      @apply bg-light-800 dark:bg-dark-400 !important;
    }
    .background-light700_dark400 {
       @apply bg-light-700 dark:bg-dark-400;
@@ -35,12 +31,7 @@ bg-dark-400
    .background-light700_dark300 {
       @apply bg-light-700 dark:bg-dark-300;
    }
-   .background-light800_dark400 {
-      @apply bg-light-800
-dark
-:
-bg-dark-400;
-   }
+
    .background-light800_dark300 {
       @apply bg-light-800 dark:bg-dark-300
 !important;
@@ -52,25 +43,17 @@ bg-dark-400;
       @apply text-dark-200 dark:text-light-900;
    }
    .text-dark200_light800 {
-      @apply text-dark-200
-dark
-:
-text-light-800
-!important;
+      @apply text-dark-200 dark:text-light-800 !important;
    }
    .text-dark300_light700 {
       @apply text-dark-300 dark:text-light-700;
    }
 
    .text-dark500_light700 {
-      @apply text-dark-500 dark:text-light-700
-!important;
+      @apply text-dark-500 dark:text-light-700 !important;
    }
    .text-dark500_light500 {
-      @apply text-dark-500
-dark
-:
-text-light-500;
+      @apply text-dark-500 dark:text-light-500;
    }
    .text-dark300_light900 {
       @apply text-dark-300 dark:text-light-900 !important;
@@ -82,10 +65,7 @@ text-light-500;
       @apply text-light-400 dark:text-light-500 !important;
    }
    .text-dark400_light500 {
-      @apply text-dark-400
-dark
-:
-text-light-500;
+      @apply text-dark-400 dark:text-light-500;
    }
    .text-dark400_light900 {
       @apply text-dark-400 dark:text-light-900 !important;
@@ -170,10 +150,7 @@ dark
 shadow-dark-100;
    }
    .shadow-light100_darknone {
-      @apply shadow-light-100
-dark
-:
-shadow-none;
+      @apply shadow-light-100 dark:shadow-none;
    }
    .primary-gradient {
       background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
