@@ -4,16 +4,13 @@ import { useForm } from "react-hook-form";
 import {
    Form,
    FormControl,
-   FormDescription,
    FormField,
    FormItem,
-   FormLabel,
    FormMessage,
 } from "../ui/form";
 import { AnswerSchema } from "@/lib/validations";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "../ui/input";
 import { useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { useTheme } from "@/context/ThemeProvider";
