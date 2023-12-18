@@ -5,6 +5,7 @@ import {
    downVoteQuestion,
    upVoteQuestion,
 } from "@/lib/actions/Question.action";
+import { toggleSaveQuestion } from "@/lib/actions/User.action";
 import { formatNumber } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -32,10 +33,25 @@ const Votes = ({
    hasSaved,
 }: Props) => {
    const path = usePathname();
-   const [localeUpVote, setLocaleUpVote] = useState(!!hasUpVoted);
-   const [localeDownVote, setLocaleDownVote] = useState(!!hasDownVoted);
+   const [localeUpVote, setLocaleUpVote] = useState(hasUpVoted);
+   const [localeDownVote, setLocaleDownVote] = useState(hasDownVoted);
+   const [localeHasSaved, setLocaleHasSaved] = useState(hasSaved);
 
-   const handleSave = () => {};
+   const handleSave = async () => {
+      setLocaleHasSaved(!localeHasSaved);
+      if (!userId) {
+         return;
+      }
+      try {
+         await toggleSaveQuestion({
+            userId: JSON.parse(userId),
+            questionId: JSON.parse(itemId),
+            path,
+         });
+      } catch (error) {
+         setLocaleHasSaved(!localeHasSaved);
+      }
+   };
 
    const handleVote = async (action: string) => {
       if (!userId) {
@@ -43,7 +59,7 @@ const Votes = ({
       }
 
       if (action === "upvote") {
-         setLocaleUpVote(!localeUpVote);
+         setLocaleUpVote(!hasUpVoted);
          if (hasDownVoted) setLocaleDownVote(false);
          if (type === "question") {
             try {
@@ -55,7 +71,7 @@ const Votes = ({
                   path,
                });
             } catch (error) {
-               setLocaleUpVote(!localeUpVote);
+               setLocaleUpVote(hasUpVoted);
             }
          } else if (type === "answer") {
             await upVoteAnswer({
@@ -71,7 +87,7 @@ const Votes = ({
       }
 
       if (action === "downvote") {
-         setLocaleDownVote(!localeDownVote);
+         setLocaleDownVote(!hasDownVoted);
 
          if (hasUpVoted) setLocaleUpVote(false);
 
@@ -85,16 +101,20 @@ const Votes = ({
                   path,
                });
             } catch (error) {
-               setLocaleDownVote(!localeDownVote);
+               setLocaleDownVote(hasDownVoted);
             }
          } else if (type === "answer") {
-            await downVoteAnswer({
-               answerId: JSON.parse(itemId),
-               userId: JSON.parse(userId),
-               hasDownVoted,
-               hasUpVoted,
-               path,
-            });
+            try {
+               await downVoteAnswer({
+                  answerId: JSON.parse(itemId),
+                  userId: JSON.parse(userId),
+                  hasDownVoted,
+                  hasUpVoted,
+                  path,
+               });
+            } catch (error) {
+               setLocaleDownVote(hasDownVoted);
+            }
          }
 
          // TODO: show a toast
@@ -133,7 +153,7 @@ const Votes = ({
          {type === "question" && (
             <Image
                src={
-                  hasSaved
+                  localeHasSaved
                      ? "/assets/icons/star-filled.svg"
                      : "/assets/icons/star-red.svg"
                }
