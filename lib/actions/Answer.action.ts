@@ -17,7 +17,7 @@ export async function CreateAnswer({
    question,
 }: CreateAnswerParams) {
    try {
-      connectToDatabase();
+      await connectToDatabase();
 
       const newAnswer = await Answer.create({
          author,
@@ -42,7 +42,7 @@ export async function CreateAnswer({
 
 export async function GetAnswers({ questionId }: GetAnswersParams) {
    try {
-      connectToDatabase();
+      await connectToDatabase();
 
       const answers = await Answer.find({ question: questionId })
          .populate("author", "_id clerkId name picture")
@@ -65,7 +65,7 @@ export async function upVoteAnswer({
    console.log(answerId);
 
    try {
-      connectToDatabase();
+      await connectToDatabase();
 
       let updateQuery = {};
 
@@ -103,7 +103,7 @@ export async function downVoteAnswer({
    userId,
 }: AnswerVoteParams) {
    try {
-      connectToDatabase();
+      await connectToDatabase();
 
       let updateQuery = {};
 

@@ -21,7 +21,7 @@ interface Props {
 
 export async function getUserById({ userId }: Props) {
    try {
-      connectToDatabase();
+      await connectToDatabase();
 
       const user = await User.findOne({ clerkId: userId });
 
@@ -34,7 +34,7 @@ export async function getUserById({ userId }: Props) {
 
 export async function createUser(params: CreateUserParams) {
    try {
-      connectToDatabase();
+      await connectToDatabase();
 
       const newUser = User.create(params);
 
@@ -51,7 +51,7 @@ export async function updateUser({
    updateData,
 }: UpdateUserParams) {
    try {
-      connectToDatabase();
+      await connectToDatabase();
 
       await User.findOneAndUpdate({ clerkId }, updateData, { new: true });
 
@@ -64,7 +64,7 @@ export async function updateUser({
 
 export async function deleteUser({ clerkId }: DeleteUserParams) {
    try {
-      connectToDatabase();
+      await connectToDatabase();
 
       const user = await User.findOneAndDelete({ clerkId });
 
@@ -94,7 +94,7 @@ export async function getAllUsers({
    searchQuery,
 }: GetAllUsersParams) {
    try {
-      connectToDatabase();
+      await connectToDatabase();
       const users = await User.find({}).sort({ createdAt: -1 });
 
       return { users };
@@ -110,6 +110,7 @@ export async function toggleSaveQuestion({
    userId,
 }: ToggleSaveQuestionParams) {
    try {
+      await connectToDatabase();
       const user = await User.findById(userId);
 
       if (!user) {
@@ -151,7 +152,7 @@ export async function getSavedQuestions({
    pageSize = 10,
 }: GetSavedQuestionsParams) {
    try {
-      connectToDatabase();
+      await connectToDatabase();
 
       const query: FilterQuery<typeof Question> = searchQuery
          ? { title: { $regex: new RegExp(searchQuery, "i") } }

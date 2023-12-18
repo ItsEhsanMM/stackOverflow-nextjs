@@ -13,7 +13,7 @@ import User from "@/database/user.model";
 
 export async function getQuestions(params: GetQuestionsParams) {
    try {
-      connectToDatabase();
+      await connectToDatabase();
       const questions = await Question.find({})
          .populate({ path: "tags", model: Tag })
          .populate({ path: "author", model: User });
@@ -26,7 +26,7 @@ export async function getQuestions(params: GetQuestionsParams) {
 
 export async function createQuestion(params: any) {
    try {
-      connectToDatabase();
+      await connectToDatabase();
 
       const { title, content, author, tags, path } = params;
 
@@ -59,7 +59,7 @@ export async function GetQuestionById({ questionId }: GetQuestionByIdParams) {
    console.log(questionId);
 
    try {
-      connectToDatabase();
+      await connectToDatabase();
       const question = await Question.findById(questionId)
          .populate({
             path: "tags",
@@ -87,7 +87,7 @@ export async function upVoteQuestion({
    userId,
 }: QuestionVoteParams) {
    try {
-      connectToDatabase();
+      await connectToDatabase();
 
       let updateQuery = {};
 
@@ -127,7 +127,7 @@ export async function downVoteQuestion({
    userId,
 }: QuestionVoteParams) {
    try {
-      connectToDatabase();
+      await connectToDatabase();
 
       let updateQuery = {};
 

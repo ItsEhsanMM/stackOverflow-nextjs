@@ -10,7 +10,7 @@ export async function getTopInteractedTags({
    limit = 3,
 }: GetTopInteractedTagsParams) {
    try {
-      connectToDatabase();
+      await connectToDatabase();
       const user = await User.findById(userId);
 
       if (!user) throw new Error("User Not Found!");
@@ -27,7 +27,7 @@ export async function getTopInteractedTags({
 
 export async function getAllTags(params: GetAllTagsParams) {
    try {
-      connectToDatabase();
+      await connectToDatabase();
 
       const tags = await Tag.find({});
 
