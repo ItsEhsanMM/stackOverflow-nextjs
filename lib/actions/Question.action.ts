@@ -2,14 +2,16 @@
 
 import Question from "@/database/question.model";
 import { connectToDatabase } from "../mongoose";
-import Tag from "@/database/tag.model";
+import Tag, { ITag } from "@/database/tag.model";
 import { revalidatePath } from "next/cache";
 import {
    GetQuestionByIdParams,
+   GetQuestionsByTagIdParams,
    GetQuestionsParams,
    QuestionVoteParams,
 } from "./shared.types";
 import User from "@/database/user.model";
+import { FilterQuery } from "mongoose";
 
 export async function getQuestions(params: GetQuestionsParams) {
    try {
@@ -41,7 +43,7 @@ export async function createQuestion(params: any) {
       for (const tag of tags) {
          const existedTag = await Tag.findOneAndUpdate(
             { name: { $regex: new RegExp(`^${tag}$`, "i") } },
-            { $setOnInsert: { name: tag }, $push: { question: question._id } },
+            { $setOnInsert: { name: tag }, $push: { questions: question._id } },
             { upsert: true, new: true }
          );
          TagDocument.push(existedTag._id);
@@ -155,6 +157,45 @@ export async function downVoteQuestion({
       // TODO: add author reputation by +10
 
       revalidatePath(path);
+   } catch (error) {
+      console.log(error);
+      throw error;
+   }
+}
+
+export async function getQuestionsByTagId({
+   tagId,
+   page = 1,
+   pageSize = 10,
+   searchQuery,
+}: GetQuestionsByTagIdParams) {
+   try {
+      await connectToDatabase();
+
+      const tagFilter: FilterQuery<ITag> = { _id: tagId };
+
+      const tag = await Tag.findOne(tagFilter).populate({
+         path: "questions",
+         model: Question,
+         match: searchQuery
+            ? { title: { $regex: searchQuery, $options: "i" } }
+            : {},
+         options: {
+            sort: { createdAt: -1 },
+         },
+         populate: [
+            { path: "tags", model: Tag, select: "_id name" },
+            { path: "author", model: User, select: "_id clerkId name picture" },
+         ],
+      });
+
+      if (!tag) {
+         throw new Error("Tag not found");
+      }
+
+      const questions = tag.questions;
+
+      return { tagTitle: tag.name, questions };
    } catch (error) {
       console.log(error);
       throw error;

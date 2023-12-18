@@ -1,5 +1,4 @@
 import QuestionCard from "@/components/cards/QuestionCard";
-import HomeFilters from "@/components/home/HomeFilters";
 import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
 import LocalSearchBar from "@/components/shared/search/LocalSearchbar";
@@ -33,8 +32,6 @@ export default async function collection() {
                containerClasses="hidden max-md:flex"
             />
          </div>
-
-         <HomeFilters />
 
          <div className="mt-10 flex w-full flex-col gap-6">
             {result.questions.length > 0 ? (
