@@ -15,7 +15,7 @@ interface Props {
       _id: string;
       picture: string;
    };
-   upvotes: any;
+   upvotes: number[];
    views: number;
    answers: Array<object>;
    createdAt: Date;

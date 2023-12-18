@@ -46,3 +46,7 @@ export const formatNumber = (num: number): string => {
       return num.toString();
    }
 };
+
+export const scrollToTop = () => {
+   window.scrollTo(0, 0);
+};
