@@ -1,5 +1,6 @@
 "use client";
 
+import { downVoteAnswer, upVoteAnswer } from "@/lib/actions/Answer.action";
 import {
    downVoteQuestion,
    upVoteQuestion,
@@ -20,7 +21,7 @@ interface Props {
    hasSaved?: boolean;
 }
 
-const Voting = ({
+const Votes = ({
    type,
    itemId,
    userId,
@@ -57,13 +58,13 @@ const Voting = ({
                setLocaleUpVote(!localeUpVote);
             }
          } else if (type === "answer") {
-            // await upVoteAnswer({
-            //    questionId: JSON.parse(itemId),
-            //    userId: JSON.parse(userId),
-            //    hasDownVoted,
-            //    hasUpVoted,
-            //    path,
-            // });
+            await upVoteAnswer({
+               answerId: JSON.parse(itemId),
+               userId: JSON.parse(userId),
+               hasDownVoted,
+               hasUpVoted,
+               path,
+            });
          }
 
          // TODO: show a toast
@@ -87,13 +88,13 @@ const Voting = ({
                setLocaleDownVote(!localeDownVote);
             }
          } else if (type === "answer") {
-            // await downVoteAnswer({
-            //    questionId: JSON.parse(itemId),
-            //    userId: JSON.parse(userId),
-            //    hasDownVoted,
-            //    hasUpVoted,
-            //    path,
-            // });
+            await downVoteAnswer({
+               answerId: JSON.parse(itemId),
+               userId: JSON.parse(userId),
+               hasDownVoted,
+               hasUpVoted,
+               path,
+            });
          }
 
          // TODO: show a toast
@@ -129,19 +130,21 @@ const Voting = ({
                </div>
             ))}
          </div>
-         <Image
-            src={
-               hasSaved
-                  ? "/assets/icons/star-filled.svg"
-                  : "/assets/icons/star-red.svg"
-            }
-            width={18}
-            height={18}
-            alt="star"
-            className="cursor-pointer"
-            onClick={handleSave}
-         />
+         {type === "question" && (
+            <Image
+               src={
+                  hasSaved
+                     ? "/assets/icons/star-filled.svg"
+                     : "/assets/icons/star-red.svg"
+               }
+               width={18}
+               height={18}
+               alt="star"
+               className="cursor-pointer"
+               onClick={handleSave}
+            />
+         )}
       </div>
    );
 };
-export default Voting;
+export default Votes;
