@@ -66,7 +66,7 @@ const AllAnswers = async ({
                               </p>
                            </div>
                         </Link>
-                        {/* <div className="flex justify-end">Voting</div> */}
+                        <div className="flex justify-end">Voting</div>
                      </div>
                   </div>
                   <ParseHTML data={answer.content} />

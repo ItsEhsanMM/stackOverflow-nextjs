@@ -4,7 +4,11 @@ import Question from "@/database/question.model";
 import { connectToDatabase } from "../mongoose";
 import Tag from "@/database/tag.model";
 import { revalidatePath } from "next/cache";
-import { GetQuestionByIdParams, GetQuestionsParams } from "./shared.types";
+import {
+   GetQuestionByIdParams,
+   GetQuestionsParams,
+   QuestionVoteParams,
+} from "./shared.types";
 import User from "@/database/user.model";
 
 export async function getQuestions(params: GetQuestionsParams) {
@@ -69,6 +73,88 @@ export async function GetQuestionById({ questionId }: GetQuestionByIdParams) {
          });
 
       return question;
+   } catch (error) {
+      console.log(error);
+      throw error;
+   }
+}
+
+export async function upVoteQuestion({
+   hasDownVoted,
+   hasUpVoted,
+   path,
+   questionId,
+   userId,
+}: QuestionVoteParams) {
+   try {
+      connectToDatabase();
+
+      let updateQuery = {};
+
+      if (hasUpVoted) {
+         updateQuery = { $pull: { upvotes: userId } };
+      } else if (hasDownVoted) {
+         updateQuery = {
+            $pull: { downvotes: userId },
+            $push: { upvotes: userId },
+         };
+      } else {
+         updateQuery = { $addToSet: { upvotes: userId } };
+      }
+
+      const question = await Question.findByIdAndUpdate(
+         questionId,
+         updateQuery,
+         { new: true }
+      );
+
+      if (!question) {
+         throw new Error("Question Not Found!");
+      }
+      // TODO: add author reputation by +10
+      revalidatePath(path);
+   } catch (error) {
+      console.log(error);
+      throw error;
+   }
+}
+
+export async function downVoteQuestion({
+   hasDownVoted,
+   hasUpVoted,
+   path,
+   questionId,
+   userId,
+}: QuestionVoteParams) {
+   try {
+      connectToDatabase();
+
+      let updateQuery = {};
+
+      if (hasDownVoted) {
+         updateQuery = { $pull: { downvotes: userId } };
+      } else if (hasUpVoted) {
+         updateQuery = {
+            $pull: { upvotes: userId },
+            $push: { downvotes: userId },
+         };
+      } else {
+         updateQuery = { $addToSet: { downvotes: userId } };
+      }
+
+      const question = await Question.findByIdAndUpdate(
+         questionId,
+         updateQuery,
+         { new: true }
+      );
+
+      if (!question) {
+         throw new Error("Question Not Found!");
+      }
+
+      // TODO: add author reputation by +10
+
+      revalidatePath(path);
    } catch (error) {
       console.log(error);
       throw error;
