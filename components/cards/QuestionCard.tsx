@@ -13,6 +13,7 @@ interface Props {
    author: {
       name: string;
       _id: string;
+      clerkId: string;
       picture: string;
    };
    upvotes: number[];
@@ -59,7 +60,7 @@ const QuestionCard = ({
                value={author.name}
                isAuthor
                title={` - asked ${getTimestamp(createdAt)}`}
-               href={`/profle/${author._id}`}
+               href={`/profile/${author.clerkId}`}
                textStyles="body-medium text-dark400_light700"
             />
             <Metric
