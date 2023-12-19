@@ -47,6 +47,13 @@ export const formatNumber = (num: number): string => {
    }
 };
 
-export const scrollToTop = () => {
-   window.scrollTo(0, 0);
-};
+export function getJoinedDate(date: Date): string {
+   // Get the month and year from the Date object
+   const month = date.toLocaleString("en-us", { month: "long" });
+   const year = date.getFullYear();
+
+   // Join the month and year
+   const joinedDate = `${month} ${year}`;
+
+   return joinedDate;
+}

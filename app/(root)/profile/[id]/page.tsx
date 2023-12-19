@@ -5,6 +5,8 @@ import { SignedIn, auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getJoinedDate } from "@/lib/utils";
+import ProfileLink from "@/components/shared/ProfileLink";
 
 const page = async ({ params: { id } }: URLProps) => {
    const { userId: clerkId } = auth();
@@ -31,10 +33,30 @@ const page = async ({ params: { id } }: URLProps) => {
                   </p>
 
                   <div className="mt-5 flex flex-wrap items-center justify-start gap-5">
-                     {userInfo.user.location && <>location</>}
-                     {userInfo.user.joinedAt.toString()}
+                     {userInfo.user.portfolioWebsite && (
+                        <ProfileLink
+                           imgUrl="/assets/icons/link.svg"
+                           title="Portfolio"
+                           href={userInfo.user.portfolioWebsite}
+                        />
+                     )}
+
+                     {userInfo.user.location && (
+                        <ProfileLink
+                           imgUrl="/assets/icons/location.svg"
+                           title={userInfo.user.location}
+                        />
+                     )}
+                     <ProfileLink
+                        imgUrl="/assets/icons/calendar.svg"
+                        title={getJoinedDate(userInfo.user.joinedAt)}
+                     />
                   </div>
-                  {userInfo.user.bio && <p>{userInfo.user.bio}</p>}
+                  {userInfo.user.bio && (
+                     <p className="paragraph-regular text-dark400_light800 mt-8">
+                        {userInfo.user.bio}
+                     </p>
+                  )}
                </div>
             </div>
             <div className="flex justify-end max-sm:mb-5 max-sm:w-full sm:mt-3">
