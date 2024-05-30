@@ -7,13 +7,12 @@ import { revalidatePath } from "next/cache";
 import {
    GetQuestionByIdParams,
    GetQuestionsByTagIdParams,
-   GetQuestionsParams,
    QuestionVoteParams,
 } from "./shared.types";
 import User from "@/database/user.model";
 import { FilterQuery } from "mongoose";
 
-export async function getQuestions(params: GetQuestionsParams) {
+export async function getQuestions() {
    try {
       await connectToDatabase();
       const questions = await Question.find({})
