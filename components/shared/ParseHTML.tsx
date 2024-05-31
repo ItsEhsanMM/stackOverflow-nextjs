@@ -28,14 +28,14 @@ import "prismjs/plugins/line-numbers/prism-line-numbers.js";
 import "prismjs/plugins/line-numbers/prism-line-numbers.css";
 
 interface Props {
-   data: string;
+  data: string;
 }
 
 const ParseHTML = ({ data }: Props) => {
-   useEffect(() => {
-      Prism.highlightAll();
-   }, []);
+  useEffect(() => {
+    Prism.highlightAll();
+  }, []);
 
-   return <div>{parse(data)}</div>;
+  return <div>{parse(data)}</div>;
 };
 export default ParseHTML;

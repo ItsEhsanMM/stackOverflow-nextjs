@@ -2,135 +2,135 @@
 
 import Answer from "@/database/answer.model";
 import {
-   AnswerVoteParams,
-   CreateAnswerParams,
-   GetAnswersParams,
+  AnswerVoteParams,
+  CreateAnswerParams,
+  GetAnswersParams,
 } from "./shared.types";
 import { connectToDatabase } from "../mongoose";
 import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
 
 export async function CreateAnswer({
-   author,
-   content,
-   path,
-   question,
+  author,
+  content,
+  path,
+  question,
 }: CreateAnswerParams) {
-   try {
-      await connectToDatabase();
+  try {
+    await connectToDatabase();
 
-      const newAnswer = await Answer.create({
-         author,
-         content,
-         question,
-      });
+    const newAnswer = await Answer.create({
+      author,
+      content,
+      question,
+    });
 
-      console.log(question);
+    console.log(question);
 
-      await Question.findByIdAndUpdate(question, {
-         $push: { answers: newAnswer._id },
-      });
+    await Question.findByIdAndUpdate(question, {
+      $push: { answers: newAnswer._id },
+    });
 
-      revalidatePath(path);
+    revalidatePath(path);
 
-      return newAnswer;
-   } catch (error) {
-      console.log(error);
-      throw error;
-   }
+    return newAnswer;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 }
 
 export async function GetAnswers({ questionId }: GetAnswersParams) {
-   try {
-      await connectToDatabase();
+  try {
+    await connectToDatabase();
 
-      const answers = await Answer.find({ question: questionId })
-         .populate("author", "_id clerkId name picture")
-         .sort({ createdAt: -1 });
+    const answers = await Answer.find({ question: questionId })
+      .populate("author", "_id clerkId name picture")
+      .sort({ createdAt: -1 });
 
-      return { answers };
-   } catch (error) {
-      console.log(error);
-      throw error;
-   }
+    return { answers };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 }
 
 export async function upVoteAnswer({
-   hasDownVoted,
-   hasUpVoted,
-   path,
-   answerId,
-   userId,
+  hasDownVoted,
+  hasUpVoted,
+  path,
+  answerId,
+  userId,
 }: AnswerVoteParams) {
-   console.log(answerId);
+  console.log(answerId);
 
-   try {
-      await connectToDatabase();
+  try {
+    await connectToDatabase();
 
-      let updateQuery = {};
+    let updateQuery = {};
 
-      if (hasUpVoted) {
-         updateQuery = { $pull: { upvotes: userId } };
-      } else if (hasDownVoted) {
-         updateQuery = {
-            $pull: { downvotes: userId },
-            $push: { upvotes: userId },
-         };
-      } else {
-         updateQuery = { $addToSet: { upvotes: userId } };
-      }
+    if (hasUpVoted) {
+      updateQuery = { $pull: { upvotes: userId } };
+    } else if (hasDownVoted) {
+      updateQuery = {
+        $pull: { downvotes: userId },
+        $push: { upvotes: userId },
+      };
+    } else {
+      updateQuery = { $addToSet: { upvotes: userId } };
+    }
 
-      const answer = await Answer.findByIdAndUpdate(answerId, updateQuery, {
-         new: true,
-      });
+    const answer = await Answer.findByIdAndUpdate(answerId, updateQuery, {
+      new: true,
+    });
 
-      if (!answer) {
-         throw new Error("Answer Not Found!");
-      }
-      // TODO: add author reputation by +10
-      revalidatePath(path);
-   } catch (error) {
-      console.log(error);
-      throw error;
-   }
+    if (!answer) {
+      throw new Error("Answer Not Found!");
+    }
+    // TODO: add author reputation by +10
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 }
 
 export async function downVoteAnswer({
-   hasDownVoted,
-   hasUpVoted,
-   path,
-   answerId,
-   userId,
+  hasDownVoted,
+  hasUpVoted,
+  path,
+  answerId,
+  userId,
 }: AnswerVoteParams) {
-   try {
-      await connectToDatabase();
+  try {
+    await connectToDatabase();
 
-      let updateQuery = {};
+    let updateQuery = {};
 
-      if (hasDownVoted) {
-         updateQuery = { $pull: { downvotes: userId } };
-      } else if (hasUpVoted) {
-         updateQuery = {
-            $pull: { upvotes: userId },
-            $push: { downvotes: userId },
-         };
-      } else {
-         updateQuery = { $addToSet: { downvotes: userId } };
-      }
+    if (hasDownVoted) {
+      updateQuery = { $pull: { downvotes: userId } };
+    } else if (hasUpVoted) {
+      updateQuery = {
+        $pull: { upvotes: userId },
+        $push: { downvotes: userId },
+      };
+    } else {
+      updateQuery = { $addToSet: { downvotes: userId } };
+    }
 
-      const answer = await Answer.findByIdAndUpdate(answerId, updateQuery, {
-         new: true,
-      });
+    const answer = await Answer.findByIdAndUpdate(answerId, updateQuery, {
+      new: true,
+    });
 
-      if (!answer) {
-         throw new Error("Answer Not Found!");
-      }
+    if (!answer) {
+      throw new Error("Answer Not Found!");
+    }
 
-      // TODO: add author reputation by +10
+    // TODO: add author reputation by +10
 
-      revalidatePath(path);
-   } catch (error) {
-      console.log(error);
-      throw error;
-   }
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 }
