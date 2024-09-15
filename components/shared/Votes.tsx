@@ -1,25 +1,23 @@
-"use client";
+"use client"
 
-import { downVoteAnswer, upVoteAnswer } from "@/lib/actions/Answer.action";
-import {
-  downVoteQuestion,
-  upVoteQuestion,
-} from "@/lib/actions/Question.action";
-import { toggleSaveQuestion } from "@/lib/actions/User.action";
+import { downvoteAnswer, upvoteAnswer } from "@/lib/actions/answer.action";
 import { viewQuestion } from "@/lib/actions/interaction.action";
-import { formatNumber } from "@/lib/utils";
+import { downvoteQuestion, upvoteQuestion } from "@/lib/actions/question.action";
+import { toggleSaveQuestion } from "@/lib/actions/user.action";
+import { formatAndDivideNumber } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { toast } from "../ui/use-toast";
 
 interface Props {
   type: string;
   itemId: string;
   userId: string;
-  upVotes: number;
-  downVotes: number;
-  hasUpVoted: boolean;
-  hasDownVoted: boolean;
+  upvotes: number;
+  hasupVoted: boolean;
+  downvotes: number;
+  hasdownVoted: boolean;
   hasSaved?: boolean;
 }
 
@@ -27,142 +25,144 @@ const Votes = ({
   type,
   itemId,
   userId,
-  upVotes,
-  downVotes,
-  hasUpVoted,
-  hasDownVoted,
+  upvotes,
+  hasupVoted,
+  downvotes,
+  hasdownVoted,
   hasSaved,
 }: Props) => {
-  const path = usePathname();
+  const pathname = usePathname();
   const router = useRouter();
-  const [localeUpVote, setLocaleUpVote] = useState(hasUpVoted);
-  const [localeDownVote, setLocaleDownVote] = useState(hasDownVoted);
-  const [localeHasSaved, setLocaleHasSaved] = useState(hasSaved);
+
+  const handleSave = async () => {
+    await toggleSaveQuestion({
+      userId: JSON.parse(userId),
+      questionId: JSON.parse(itemId),
+      path: pathname,
+    })
+
+    return toast({
+      title: `Question ${!hasSaved ? 'Saved in' : 'Removed from'} your collection`,
+      variant: !hasSaved ? 'default' : 'destructive'
+    })
+  }
+
+  const handleVote = async (action: string) => {
+    if(!userId) {
+      return toast({
+        title: 'Please log in',
+        description: 'You must be logged in to perform this action',
+      })
+    }
+
+    if(action === 'upvote') {
+      if(type === 'Question') {
+        await upvoteQuestion({ 
+          questionId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasupVoted,
+          hasdownVoted,
+          path: pathname,
+        })
+      } else if(type === 'Answer') {
+        await upvoteAnswer({ 
+          answerId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasupVoted,
+          hasdownVoted,
+          path: pathname,
+        })
+      }
+
+      return toast({
+        title: `Upvote ${!hasupVoted ? 'Successful' : 'Removed'}`,
+        variant: !hasupVoted ? 'default' : 'destructive'
+      })
+    }
+
+    if(action === 'downvote') {
+      if(type === 'Question') {
+        await downvoteQuestion({ 
+          questionId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasupVoted,
+          hasdownVoted,
+          path: pathname,
+        })
+      } else if(type === 'Answer') {
+        await downvoteAnswer({ 
+          answerId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasupVoted,
+          hasdownVoted,
+          path: pathname,
+        })
+      }
+
+      return toast({
+        title: `Downvote ${!hasupVoted ? 'Successful' : 'Removed'}`,
+        variant: !hasupVoted ? 'default' : 'destructive'
+      })
+      
+    }
+  }
 
   useEffect(() => {
     viewQuestion({
       questionId: JSON.parse(itemId),
       userId: userId ? JSON.parse(userId) : undefined,
-    });
-  }, [itemId, userId, path, router]);
-
-  const handleSave = async () => {
-    setLocaleHasSaved(!localeHasSaved);
-    if (!userId) {
-      return;
-    }
-    try {
-      await toggleSaveQuestion({
-        userId: JSON.parse(userId),
-        questionId: JSON.parse(itemId),
-        path,
-      });
-    } catch (error) {
-      setLocaleHasSaved(!localeHasSaved);
-    }
-  };
-
-  const handleVote = async (action: string) => {
-    if (!userId) {
-      return;
-    }
-
-    if (action === "upvote") {
-      setLocaleUpVote(!hasUpVoted);
-      if (hasDownVoted) setLocaleDownVote(false);
-      if (type === "question") {
-        try {
-          await upVoteQuestion({
-            questionId: JSON.parse(itemId),
-            userId: JSON.parse(userId),
-            hasDownVoted,
-            hasUpVoted,
-            path,
-          });
-        } catch (error) {
-          setLocaleUpVote(hasUpVoted);
-        }
-      } else if (type === "answer") {
-        await upVoteAnswer({
-          answerId: JSON.parse(itemId),
-          userId: JSON.parse(userId),
-          hasDownVoted,
-          hasUpVoted,
-          path,
-        });
-      }
-
-      // TODO: show a toast
-    }
-
-    if (action === "downvote") {
-      setLocaleDownVote(!hasDownVoted);
-
-      if (hasUpVoted) setLocaleUpVote(false);
-
-      if (type === "question") {
-        try {
-          await downVoteQuestion({
-            questionId: JSON.parse(itemId),
-            userId: JSON.parse(userId),
-            hasDownVoted,
-            hasUpVoted,
-            path,
-          });
-        } catch (error) {
-          setLocaleDownVote(hasDownVoted);
-        }
-      } else if (type === "answer") {
-        try {
-          await downVoteAnswer({
-            answerId: JSON.parse(itemId),
-            userId: JSON.parse(userId),
-            hasDownVoted,
-            hasUpVoted,
-            path,
-          });
-        } catch (error) {
-          setLocaleDownVote(hasDownVoted);
-        }
-      }
-
-      // TODO: show a toast
-    }
-  };
+    })
+  }, [itemId, userId, pathname, router]);
 
   return (
     <div className="flex gap-5">
       <div className="flex-center gap-2.5">
-        {["upvote", "downvote"].map((action) => (
-          <div key={action} className="flex-center gap-1.5">
-            <Image
-              src={`/assets/icons/${action}${
-                (action === "upvote" && localeUpVote) ||
-                (action === "downvote" && localeDownVote)
-                  ? "d"
-                  : ""
-              }.svg`}
-              width={18}
-              height={18}
-              alt={action}
-              className="cursor-pointer"
-              onClick={() => handleVote(action)}
-            />
+        <div className="flex-center gap-1.5">
+          <Image 
+            src={hasupVoted
+              ? '/assets/icons/upvoted.svg'
+              : '/assets/icons/upvote.svg'
+            }
+            width={18}
+            height={18}
+            alt="upvote"
+            className="cursor-pointer"
+            onClick={() => handleVote('upvote')}
+          />
 
-            <div className="flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1">
-              <p className="subtle-medium text-dark400_light900">
-                {formatNumber(action === "upvote" ? upVotes : downVotes)}
-              </p>
-            </div>
+          <div className="flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1">
+            <p className="subtle-medium text-dark400_light900">
+              {formatAndDivideNumber(upvotes)}
+            </p>
           </div>
-        ))}
+        </div>
+
+        <div className="flex-center gap-1.5">
+          <Image 
+            src={hasdownVoted
+              ? '/assets/icons/downvoted.svg'
+              : '/assets/icons/downvote.svg'
+            }
+            width={18}
+            height={18}
+            alt="downvote"
+            className="cursor-pointer"
+            onClick={() => handleVote('downvote')}
+          />
+
+          <div className="flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1">
+            <p className="subtle-medium text-dark400_light900">
+              {formatAndDivideNumber(downvotes)}
+            </p>
+          </div>
+        </div>
       </div>
-      {type === "question" && (
-        <Image
-          src={
-            localeHasSaved
-              ? "/assets/icons/star-filled.svg"
-              : "/assets/icons/star-red.svg"
+
+      {type === 'Question' && (
+        <Image 
+          src={hasSaved
+            ? '/assets/icons/star-filled.svg'
+            : '/assets/icons/star-red.svg'
           }
           width={18}
           height={18}
@@ -172,6 +172,7 @@ const Votes = ({
         />
       )}
     </div>
-  );
-};
-export default Votes;
+  )
+}
+
+export default Votes

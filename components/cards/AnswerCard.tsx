@@ -1,33 +1,37 @@
 import Link from "next/link";
+
 import Metric from "../shared/Metric";
-import { formatNumber, getTimestamp } from "@/lib/utils";
+import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
+import { SignedIn } from "@clerk/nextjs";
+import EditDeleteAction from "../shared/EditDeleteAction";
 
 interface Props {
+  clerkId?: string | null;
   _id: string;
-
-  author: {
-    name: string;
-    _id: string;
-    clerkId: string;
-    picture: string;
-  };
-  upvotes: number;
-  createdAt: Date;
-  clerkId?: string;
   question: {
     _id: string;
     title: string;
   };
+  author: {
+    _id: string;
+    clerkId: string;
+    name: string;
+    picture: string;
+  };
+  upvotes: number;
+  createdAt: Date;
 }
 
 const AnswerCard = ({
   clerkId,
   _id,
+  question,
   author,
   upvotes,
   createdAt,
-  question,
 }: Props) => {
+  const showActionButtons = clerkId && clerkId === author.clerkId;
+
   return (
     <Link
       href={`/question/${question._id}/#${_id}`}
@@ -42,6 +46,12 @@ const AnswerCard = ({
             {question.title}
           </h3>
         </div>
+
+        <SignedIn>
+          {showActionButtons && (
+            <EditDeleteAction type="Answer" itemId={JSON.stringify(_id)} />
+          )}
+        </SignedIn>
       </div>
 
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
@@ -49,7 +59,7 @@ const AnswerCard = ({
           imgUrl={author.picture}
           alt="user avatar"
           value={author.name}
-          title={` asked ${getTimestamp(createdAt)}`}
+          title={` • asked ${getTimestamp(createdAt)}`}
           href={`/profile/${author.clerkId}`}
           textStyles="body-medium text-dark400_light700"
           isAuthor
@@ -59,7 +69,7 @@ const AnswerCard = ({
           <Metric
             imgUrl="/assets/icons/like.svg"
             alt="like icon"
-            value={formatNumber(upvotes)}
+            value={formatAndDivideNumber(upvotes)}
             title=" Votes"
             textStyles="small-medium text-dark400_light800"
           />
@@ -68,4 +78,5 @@ const AnswerCard = ({
     </Link>
   );
 };
+
 export default AnswerCard;
